@@ -2,7 +2,7 @@ name: Download MSHA Quarterly Coal Production ZIP File
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Runs daily at 1:00 AM UTC
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 permissions:
@@ -13,10 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Quarterly MSHA Coal Production ZIP File
-        run: curl -o quarterly-coal-production.zip "https://arlweb.msha.gov/OpenGovernmentData/DataSets/MinesProdQuarterly.zip"
+        run: |
+          curl -L --fail --retry 3 --retry-delay 5 \
+            -o quarterly-coal-production.zip \
+            "https://arlweb.msha.gov/OpenGovernmentData/DataSets/MinesProdQuarterly.zip"
+
+      - name: Validate ZIP File
+        run: |
+          ls -lh quarterly-coal-production.zip
+          file quarterly-coal-production.zip
+          unzip -t quarterly-coal-production.zip
 
       - name: Upload ZIP File as Release Asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: quarterly-coal-production.zip
           tag_name: quarterly-coal-production
