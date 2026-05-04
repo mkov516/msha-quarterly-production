@@ -22,7 +22,7 @@ jobs:
         run: |
           ls -lh quarterly-coal-production.zip
           file quarterly-coal-production.zip
-          unzip -t quarterly-coal-production.zip
+          7z t quarterly-coal-production.zip
 
       - name: Upload ZIP File as Release Asset
         uses: softprops/action-gh-release@v2
